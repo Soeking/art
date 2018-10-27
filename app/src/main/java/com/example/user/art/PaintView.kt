@@ -2,6 +2,7 @@ package com.example.user.art
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
@@ -17,7 +18,7 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
 
         path = Path()
         paint = Paint()
-        paint.color = -0x1000000
+        paint.color =Color.BLACK
         paint.style = Paint.Style.STROKE
         paint.strokeJoin = Paint.Join.ROUND
         paint.strokeCap = Paint.Cap.ROUND
@@ -52,5 +53,13 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     fun clear() {
         path.reset()
         invalidate()
+    }
+
+    fun changeColor(){
+        when(paint.color){
+            Color.BLACK->paint.color=Color.RED
+            Color.RED->paint.color=Color.BLUE
+            Color.BLUE->paint.color=Color.BLACK
+        }
     }
 }

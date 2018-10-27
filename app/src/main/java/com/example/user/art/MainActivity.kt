@@ -11,9 +11,14 @@ class MainActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val paintView = findViewById<View>(R.id.view) as PaintView
+
         reset.setOnClickListener {
-            val paintView = findViewById<View>(R.id.view) as PaintView
             paintView.clear()
+        }
+
+        change.setOnClickListener {
+            paintView.changeColor()
         }
     }
 }
