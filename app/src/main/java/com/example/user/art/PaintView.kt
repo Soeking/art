@@ -22,7 +22,7 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
         paint.style = Paint.Style.STROKE
         paint.strokeJoin = Paint.Join.ROUND
         paint.strokeCap = Paint.Cap.ROUND
-        paint.strokeWidth = 10f
+        paint.strokeWidth = 8f
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -61,5 +61,6 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
             Color.RED->paint.color=Color.BLUE
             Color.BLUE->paint.color=Color.BLACK
         }
+        invalidate()
     }
 }
