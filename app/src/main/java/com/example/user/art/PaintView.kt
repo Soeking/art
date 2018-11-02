@@ -79,8 +79,9 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     }
 
     fun clear() {
+        val cc=ByteBuffer.allocate(1)
         path.reset()
-        client.send("clear")
+        client.send(cc)
         invalidate()
     }
 
