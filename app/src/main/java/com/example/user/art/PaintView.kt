@@ -17,7 +17,7 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     private val path: Path
     private val otherpaint:Paint
     private val otherpath:Path
-    private val uri=URI("ws://192.168.0.22/ws")
+    private val uri=URI("ws://192.168.0.22:8080/myws/echo")
     private val client=WebSocket(this,uri)
 
     init {
@@ -79,8 +79,9 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     }
 
     fun clear() {
-        val cc=ByteBuffer.allocate(1)
+        val cc=ByteBuffer.allocate(8)
         path.reset()
+        cc.putFloat(-1f)
         client.send(cc)
         invalidate()
     }
