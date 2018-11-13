@@ -16,9 +16,5 @@ class MainActivity : AppCompatActivity(){
         reset.setOnClickListener {
             paintView.clear()
         }
-
-        change.setOnClickListener {
-            paintView.changeColor()
-        }
     }
 }

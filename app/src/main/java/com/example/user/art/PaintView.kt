@@ -9,7 +9,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import java.net.URI
-import java.nio.ByteBuffer
 
 class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 
@@ -47,28 +46,24 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
-        val ar=ByteBuffer.allocate(8)
-        ar.putFloat(x)
-        ar.putFloat(y)
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 path.moveTo(x, y)
-                client.send(ar)
+                client.send("$x/$y")
                 invalidate()
             }
             MotionEvent.ACTION_MOVE -> {
                 path.lineTo(x, y)
-                client.send(ar)
+                client.send("$x/$y")
                 invalidate()
             }
             MotionEvent.ACTION_UP -> {
                 path.lineTo(x, y)
-                client.send(ar)
+                client.send("$x/$y")
                 invalidate()
             }
         }
-        ar.clear()
         return true
     }
 
@@ -79,24 +74,13 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     }
 
     fun clear() {
-        val cc=ByteBuffer.allocate(8)
         path.reset()
-        cc.putFloat(-1f)
-        client.send(cc)
+        client.send("clear")
         invalidate()
     }
 
     fun otherClear(){
         path.reset()
-        invalidate()
-    }
-
-    fun changeColor(){
-        when(paint.color){
-            Color.BLACK->paint.color=Color.RED
-            Color.RED->paint.color=Color.BLUE
-            Color.BLUE->paint.color=Color.BLACK
-        }
         invalidate()
     }
 }
