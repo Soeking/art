@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import java.net.URI
@@ -16,8 +17,8 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     private val path: Path
     private val otherpaint:Paint
     private val otherpath:Path
-    private val uri=URI("ws://192.168.0.22:8080/myws/echo")
-    private val client=WebSocket(this,uri)
+    public val uri=URI("ws://192.168.0.22:8080/myws/echo")
+    public val client=WebSocket(this,uri)
 
     init {
         path = Path()
@@ -50,11 +51,13 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 path.moveTo(x, y)
+                Log.i("before","x:$x y:$y")
                 client.send("$x/$y")
                 invalidate()
             }
             MotionEvent.ACTION_MOVE -> {
                 path.lineTo(x, y)
+                Log.i("before","x:$x y:$y")
                 client.send("$x/$y")
                 invalidate()
             }

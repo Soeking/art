@@ -16,5 +16,7 @@ class MainActivity : AppCompatActivity(){
         reset.setOnClickListener {
             paintView.clear()
         }
+
+        paintView.client.connect()
     }
 }

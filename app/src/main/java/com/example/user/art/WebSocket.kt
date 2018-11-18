@@ -12,7 +12,7 @@ class WebSocket(activity: View,uri: URI): WebSocketClient(uri){
     val paintView=activity.findViewById<View>(R.id.view) as PaintView
 
     override fun onOpen(handshakedata: ServerHandshake?) {
-
+        Log.i("open","could open")
     }
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
@@ -20,7 +20,7 @@ class WebSocket(activity: View,uri: URI): WebSocketClient(uri){
     }
 
     override fun onMessage(message: String?) {
-        Log.d("re",message)
+        Log.i("re","after:$message")
         var at=""
         var bt=""
         var bo=false
@@ -40,6 +40,6 @@ class WebSocket(activity: View,uri: URI): WebSocketClient(uri){
     }
 
     override fun onError(ex: Exception?) {
-
+        Log.i("err","happen error")
     }
 }
