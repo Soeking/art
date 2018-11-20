@@ -26,6 +26,18 @@ class WebSocket(activity: View,uri: URI): WebSocketClient(uri){
         var bo=false
 
         if (message=="clear") paintView.otherClear()
+        else if (message!!.first()=='a'){
+            for (i in message!!) {
+                if (i == '/') {
+                    bo = true
+                    continue
+                }
+                if (i=='a') continue
+                if (bo) bt += i
+                else at += i
+            }
+            paintView.otherMove(at.toFloat(),bt.toFloat())
+        }
         else {
             for (i in message!!) {
                 if (i == '/') {

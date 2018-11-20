@@ -52,7 +52,7 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
             MotionEvent.ACTION_DOWN -> {
                 path.moveTo(x, y)
                 Log.i("before","x:$x y:$y")
-                client.send("$x/$y")
+                client.send("a$x/$y")
                 invalidate()
             }
             MotionEvent.ACTION_MOVE -> {
@@ -70,8 +70,14 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
         return true
     }
 
-    fun otherDraw(x:Float,y:Float): Boolean {
+    fun otherMove(x: Float,y: Float):Boolean{
         otherpath.moveTo(x,y)
+        invalidate()
+        return true
+    }
+
+    fun otherDraw(x:Float,y:Float): Boolean {
+        otherpath.lineTo(x,y)
         invalidate()
         return true
     }
