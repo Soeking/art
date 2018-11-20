@@ -10,6 +10,8 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import java.net.URI
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 
@@ -17,8 +19,11 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     private val path: Path
     private val otherpaint:Paint
     private val otherpath:Path
-    public val uri=URI("ws://192.168.0.22:8080/myws/echo")
-    public val client=WebSocket(this,uri)
+    val uri=URI("ws://192.168.0.22:8080/myws/echo")
+    val client=WebSocket(this,uri)
+    val form= SimpleDateFormat("ssSSS")
+    val data= Date(System.currentTimeMillis())
+    val myid="${form.format(data)}"
 
     init {
         path = Path()
@@ -51,18 +56,18 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
             MotionEvent.ACTION_DOWN -> {
                 path.moveTo(x, y)
                 Log.i("before","x:$x y:$y")
-                client.send("a$x/$y")
+                client.send("${myid}_a$x/$y")
                 invalidate()
             }
             MotionEvent.ACTION_MOVE -> {
                 path.lineTo(x, y)
                 Log.i("before","x:$x y:$y")
-                client.send("$x/$y")
+                client.send("${myid}_$x/$y")
                 invalidate()
             }
             MotionEvent.ACTION_UP -> {
                 path.lineTo(x, y)
-                client.send("$x/$y")
+                client.send("${myid}_$x/$y")
                 invalidate()
             }
         }

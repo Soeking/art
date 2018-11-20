@@ -24,30 +24,54 @@ class WebSocket(activity: View,uri: URI): WebSocketClient(uri){
         var at=""
         var bt=""
         var bo=false
+        var und=false
 
         if (message=="clear") paintView.otherClear()
-        else if (message!!.first()=='a'){
-            for (i in message!!) {
-                if (i == '/') {
-                    bo = true
-                    continue
-                }
-                if (i=='a') continue
-                if (bo) bt += i
-                else at += i
-            }
-            paintView.otherMove(at.toFloat(),bt.toFloat())
-        }
         else {
-            for (i in message!!) {
-                if (i == '/') {
-                    bo = true
-                    continue
-                }
-                if (bo) bt += i
-                else at += i
+            var co=0
+            var id=""
+            for (t in message!!){
+                id+=t
+                co++
+                if (co==5) break
             }
-            paintView.otherDraw(at.toFloat(),bt.toFloat())
+            Log.i("id",id)
+            if (id!=paintView.myid) {
+                if (message!![6] == 'a') {
+                    for (i in message!!) {
+                        if (i == '/') {
+                            bo = true
+                            continue
+                        }
+                        if (i =='_'){
+                            und=true
+                            continue
+                        }
+                        if (i == 'a') continue
+                        if (und) {
+                            if (bo) bt += i
+                            else at += i
+                        }
+                    }
+                    paintView.otherMove(at.toFloat(), bt.toFloat())
+                } else {
+                    for (i in message!!) {
+                        if (i == '/') {
+                            bo = true
+                            continue
+                        }
+                        if (i =='_'){
+                            und=true
+                            continue
+                        }
+                        if (und) {
+                            if (bo) bt += i
+                            else at += i
+                        }
+                    }
+                    paintView.otherDraw(at.toFloat(), bt.toFloat())
+                }
+            }
         }
     }
 
