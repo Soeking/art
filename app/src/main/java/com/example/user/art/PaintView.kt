@@ -28,9 +28,7 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
         paint.strokeJoin = Paint.Join.ROUND
         paint.strokeCap = Paint.Cap.ROUND
         paint.strokeWidth = 8f
-    }
 
-    init {
         otherpath = Path()
         otherpaint = Paint()
         otherpaint.color =Color.RED
@@ -42,6 +40,7 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawPath(path, paint)
+        canvas.drawPath(otherpath,otherpaint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -73,23 +72,28 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     fun otherMove(x: Float,y: Float):Boolean{
         otherpath.moveTo(x,y)
         invalidate()
+        Log.i("otherMove","success")
         return true
     }
 
     fun otherDraw(x:Float,y:Float): Boolean {
         otherpath.lineTo(x,y)
         invalidate()
+        Log.i("otherDraw","success")
         return true
     }
 
     fun clear() {
         path.reset()
+        otherpath.reset()
         client.send("clear")
+        Log.i("clear","clear")
         invalidate()
     }
 
     fun otherClear(){
         path.reset()
+        otherpath.reset()
         invalidate()
     }
 }
