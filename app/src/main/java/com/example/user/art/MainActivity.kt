@@ -13,10 +13,23 @@ class MainActivity : AppCompatActivity(){
 
         val paintView = findViewById<View>(R.id.view) as PaintView
 
+        paintView.client.connect()
+
         reset.setOnClickListener {
             paintView.clear()
         }
 
-        paintView.client.connect()
+        eraser.setOnClickListener {
+            when(paintView.change){
+                true->{
+                    paintView.change=false
+                    eraser.setImageResource(R.drawable.ic_create_black_24dp)
+                }
+                false->{
+                    paintView.change=true
+                    eraser.setImageResource(R.drawable.ic_clear_black_24dp)
+                }
+            }
+        }
     }
 }

@@ -21,10 +21,6 @@ class WebSocket(activity: View,uri: URI): WebSocketClient(uri){
 
     override fun onMessage(message: String?) {
         Log.i("re","after:$message")
-        var at=""
-        var bt=""
-        var bo=false
-        var und=false
 
         if (message=="clear") paintView.otherClear()
         else {
@@ -37,45 +33,85 @@ class WebSocket(activity: View,uri: URI): WebSocketClient(uri){
             }
             Log.i("id",id)
             if (id!=paintView.myid) {
-                if (message!![6] == 'a') {
-                    for (i in message!!) {
-                        if (i == '/') {
-                            bo = true
-                            continue
-                        }
-                        if (i =='_'){
-                            und=true
-                            continue
-                        }
-                        if (i == 'a') continue
-                        if (und) {
-                            if (bo) bt += i
-                            else at += i
-                        }
-                    }
-                    paintView.otherMove(at.toFloat(), bt.toFloat())
-                } else {
-                    for (i in message!!) {
-                        if (i == '/') {
-                            bo = true
-                            continue
-                        }
-                        if (i =='_'){
-                            und=true
-                            continue
-                        }
-                        if (und) {
-                            if (bo) bt += i
-                            else at += i
-                        }
-                    }
-                    paintView.otherDraw(at.toFloat(), bt.toFloat())
-                }
+                setParameters(message)
             }
         }
     }
 
     override fun onError(ex: Exception?) {
         Log.i("err","happen error")
+    }
+
+    fun setParameters(number:String){
+        var at=""
+        var bt=""
+        var bo=false
+        var und=false
+
+        if (number.first()=='w') {
+            if (number[1]=='a'){
+                for (i in number){
+                    when(i){
+                        'w'->Unit
+                        'a'->Unit
+                        '/'->bo=true
+                        else->{
+                            if (bo) bt+=i
+                            else at+=i
+                        }
+                    }
+                }
+                paintView.whiteMove(at.toFloat(),bt.toFloat())
+            }
+            else{
+                for (i in number){
+                    when(i){
+                        'w'->Unit
+                        '/'->bo=true
+                        else->{
+                            if (bo) bt+=i
+                            else at+=i
+                        }
+                    }
+                }
+                paintView.whiteDraw(at.toFloat(),bt.toFloat())
+            }
+        }
+        else{
+            if (number!![6] == 'a') {
+                for (i in number!!) {
+                    if (i == '/') {
+                        bo = true
+                        continue
+                    }
+                    if (i == '_') {
+                        und = true
+                        continue
+                    }
+                    if (i == 'a') continue
+                    if (und) {
+                        if (bo) bt += i
+                        else at += i
+                    }
+                }
+                paintView.otherMove(at.toFloat(), bt.toFloat())
+            } else {
+                for (i in number!!) {
+                    if (i == '/') {
+                        bo = true
+                        continue
+                    }
+                    if (i == '_') {
+                        und = true
+                        continue
+                    }
+                    if (und) {
+                        if (bo) bt += i
+                        else at += i
+                    }
+                }
+                paintView.otherDraw(at.toFloat(), bt.toFloat())
+            }
+        }
     }
 }

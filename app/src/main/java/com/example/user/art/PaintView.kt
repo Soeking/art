@@ -19,11 +19,14 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     private val path: Path
     private val otherpaint:Paint
     private val otherpath:Path
+    private val whitepaint:Paint
+    private val whitepath:Path
     val uri=URI("ws://192.168.0.22:8080/myws/echo")
     val client=WebSocket(this,uri)
     val form= SimpleDateFormat("ssSSS")
     val data= Date(System.currentTimeMillis())
     val myid="${form.format(data)}"
+    var change=true
 
     init {
         path = Path()
@@ -41,11 +44,20 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
         otherpaint.strokeJoin = Paint.Join.ROUND
         otherpaint.strokeCap = Paint.Cap.ROUND
         otherpaint.strokeWidth = 8f
+
+        whitepath = Path()
+        whitepaint = Paint()
+        whitepaint.color =Color.WHITE
+        whitepaint.style = Paint.Style.STROKE
+        whitepaint.strokeJoin = Paint.Join.ROUND
+        whitepaint.strokeCap = Paint.Cap.ROUND
+        whitepaint.strokeWidth = 28f
     }
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawPath(path, paint)
         canvas.drawPath(otherpath,otherpaint)
+        canvas.drawPath(whitepath,whitepaint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -55,19 +67,35 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 path.moveTo(x, y)
-                Log.i("before","x:$x y:$y")
-                client.send("${myid}_a$x/$y")
+                if (change) {
+                    Log.i("before", "x:$x y:$y")
+                    client.send("${myid}_a$x/$y")
+                }
+                else{
+                    client.send("wa$x/$y")
+                }
                 invalidate()
             }
             MotionEvent.ACTION_MOVE -> {
                 path.lineTo(x, y)
-                Log.i("before","x:$x y:$y")
-                client.send("${myid}_$x/$y")
+                if (change) {
+                    Log.i("before", "x:$x y:$y")
+                    client.send("${myid}_$x/$y")
+                }
+                else{
+                    client.send("w$x/$y")
+                }
                 invalidate()
             }
             MotionEvent.ACTION_UP -> {
                 path.lineTo(x, y)
-                client.send("${myid}_$x/$y")
+                if (change) {
+                    Log.i("before", "x:$x y:$y")
+                    client.send("${myid}_$x/$y")
+                }
+                else{
+                    client.send("w$x/$y")
+                }
                 invalidate()
             }
         }
@@ -88,9 +116,19 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
         return true
     }
 
+    fun whiteMove(x:Float,y:Float):Boolean{
+        whitepath.moveTo(x,y)
+        invalidate()
+        return true
+    }
+
+    fun whiteDraw(x:Float,y: Float):Boolean{
+        whitepath.lineTo(x,y)
+        invalidate()
+        return true
+    }
+
     fun clear() {
-        path.reset()
-        otherpath.reset()
         client.send("clear")
         Log.i("clear","clear")
         invalidate()
