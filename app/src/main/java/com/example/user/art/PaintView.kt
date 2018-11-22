@@ -55,6 +55,7 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     }
 
     override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
         canvas.drawPath(path, paint)
         canvas.drawPath(otherpath,otherpaint)
         canvas.drawPath(whitepath,whitepaint)
@@ -66,8 +67,8 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                path.moveTo(x, y)
                 if (change) {
+                    path.moveTo(x, y)
                     Log.i("before", "x:$x y:$y")
                     client.send("${myid}_a$x/$y")
                 }
@@ -77,8 +78,8 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
                 invalidate()
             }
             MotionEvent.ACTION_MOVE -> {
-                path.lineTo(x, y)
                 if (change) {
+                    path.lineTo(x, y)
                     Log.i("before", "x:$x y:$y")
                     client.send("${myid}_$x/$y")
                 }
@@ -88,8 +89,8 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
                 invalidate()
             }
             MotionEvent.ACTION_UP -> {
-                path.lineTo(x, y)
                 if (change) {
+                    path.lineTo(x, y)
                     Log.i("before", "x:$x y:$y")
                     client.send("${myid}_$x/$y")
                 }
@@ -137,6 +138,7 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     fun otherClear(){
         path.reset()
         otherpath.reset()
+        whitepath.reset()
         invalidate()
     }
 }

@@ -78,36 +78,32 @@ class WebSocket(activity: View,uri: URI): WebSocketClient(uri){
             }
         }
         else{
-            if (number!![6] == 'a') {
-                for (i in number!!) {
-                    if (i == '/') {
-                        bo = true
-                        continue
-                    }
-                    if (i == '_') {
-                        und = true
-                        continue
-                    }
-                    if (i == 'a') continue
-                    if (und) {
-                        if (bo) bt += i
-                        else at += i
+            if (number[6] == 'a') {
+                for (i in number) {
+                    when(i){
+                        '/'->bo=true
+                        '_'->und=true
+                        'a'->Unit
+                        else->{
+                            if (und){
+                                if (bo) bt+=i
+                                else at+=i
+                            }
+                        }
                     }
                 }
                 paintView.otherMove(at.toFloat(), bt.toFloat())
             } else {
-                for (i in number!!) {
-                    if (i == '/') {
-                        bo = true
-                        continue
-                    }
-                    if (i == '_') {
-                        und = true
-                        continue
-                    }
-                    if (und) {
-                        if (bo) bt += i
-                        else at += i
+                for (i in number) {
+                    when(i){
+                        '/'->bo=true
+                        '_'->und=true
+                        else->{
+                            if (und){
+                                if (bo) bt+=i
+                                else at+=i
+                            }
+                        }
                     }
                 }
                 paintView.otherDraw(at.toFloat(), bt.toFloat())
