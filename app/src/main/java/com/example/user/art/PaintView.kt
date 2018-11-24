@@ -1,14 +1,21 @@
 package com.example.user.art
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
+import android.content.Intent
+import android.graphics.*
+import android.media.ImageReader
+import android.net.Uri
+import android.os.Environment
+import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,7 +26,15 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     private val path: Path
     private val otherpaint:Paint
     private val otherpath:Path
-    val uri=URI("ws://192.168.0.22:8080/myws/echo")
+    lateinit var view:View
+    private var backgroundHandler: Handler? = null
+    private lateinit var file:File
+    private var imageReader: ImageReader?=null
+    private val onImageAvailableListener = ImageReader.OnImageAvailableListener {
+        backgroundHandler?.post(ImageSaver(it.acquireNextImage(), file))
+    }
+    //lateinit var bitmap:Bitmap
+    val uri=URI("ws://10.24.87.70:8080/myws/echo")
     val client=WebSocket(this,uri)
     val form= SimpleDateFormat("ssSSS")
     val data= Date(System.currentTimeMillis())
@@ -101,4 +116,40 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
         otherpath.reset()
         invalidate()
     }
+
+    fun save(){
+        val format= SimpleDateFormat("yyyyMMddHHmmss")
+        val PIC_FILE_NAME = "${format.format(data)}.jpg"
+        file = File("/storage/emulated/0/DCIM/Art/", PIC_FILE_NAME)
+        imageReader = ImageReader.newInstance(view.width,view.height, ImageFormat.JPEG,2).apply {
+            setOnImageAvailableListener(onImageAvailableListener, backgroundHandler)
+        }
+        val contentUri = Uri.fromFile(file)
+        val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, contentUri)
+        context.sendBroadcast(mediaScanIntent)
+    }
+
+    /**
+    fun saveAsPngImage() {
+        try {
+            bitmap= Bitmap.createBitmap()
+            val extStrageDir = Environment.getExternalStorageDirectory()
+            val format= SimpleDateFormat("yyyyMMddHHmmss")
+            val PIC_FILE_NAME = "${format.format(data)}.jpg"
+            val file = File("/storage/emulated/0/DCIM/Art/", PIC_FILE_NAME)
+            val outStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+            outStream.close()
+
+            Toast.makeText(
+                context,
+                "Image saved",
+                Toast.LENGTH_SHORT).show()
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+    */
 }
