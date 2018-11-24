@@ -19,7 +19,7 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     private val path: Path
     private val otherpaint:Paint
     private val otherpath:Path
-    val uri=URI("ws://192.168.0.22:8080/myws/echo")
+    val uri=URI("ws://10.24.87.70:8080/myws/echo")
     val client=WebSocket(this,uri)
     val form= SimpleDateFormat("ssSSS")
     val data= Date(System.currentTimeMillis())
@@ -89,8 +89,6 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     }
 
     fun clear() {
-        path.reset()
-        otherpath.reset()
         client.send("clear")
         Log.i("clear","clear")
         invalidate()
@@ -98,6 +96,17 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
 
     fun otherClear(){
         path.reset()
+        otherpath.reset()
+        invalidate()
+    }
+
+    fun myClear(){
+        path.reset()
+        client.send("${myid}clear")
+        invalidate()
+    }
+
+    fun partClear(){
         otherpath.reset()
         invalidate()
     }

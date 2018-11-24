@@ -15,10 +15,14 @@ class MainActivity : AppCompatActivity(){
 
         val paintView = findViewById<View>(R.id.view) as PaintView
 
+        paintView.client.connect()
+
         reset.setOnClickListener {
             paintView.clear()
         }
 
-        paintView.client.connect()
+        myClear.setOnClickListener {
+            paintView.myClear()
+        }
     }
 }

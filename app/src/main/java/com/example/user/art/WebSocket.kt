@@ -21,10 +21,7 @@ class WebSocket(activity: View,uri: URI): WebSocketClient(uri){
 
     override fun onMessage(message: String?) {
         Log.i("re","after:$message")
-        var at=""
-        var bt=""
-        var bo=false
-        var und=false
+
 
         if (message=="clear") paintView.otherClear()
         else {
@@ -37,45 +34,51 @@ class WebSocket(activity: View,uri: URI): WebSocketClient(uri){
             }
             Log.i("id",id)
             if (id!=paintView.myid) {
-                if (message!![6] == 'a') {
-                    for (i in message!!) {
-                        if (i == '/') {
-                            bo = true
-                            continue
-                        }
-                        if (i =='_'){
-                            und=true
-                            continue
-                        }
-                        if (i == 'a') continue
-                        if (und) {
-                            if (bo) bt += i
-                            else at += i
-                        }
-                    }
-                    paintView.otherMove(at.toFloat(), bt.toFloat())
-                } else {
-                    for (i in message!!) {
-                        if (i == '/') {
-                            bo = true
-                            continue
-                        }
-                        if (i =='_'){
-                            und=true
-                            continue
-                        }
-                        if (und) {
-                            if (bo) bt += i
-                            else at += i
-                        }
-                    }
-                    paintView.otherDraw(at.toFloat(), bt.toFloat())
-                }
+                setParameter(message)
             }
         }
     }
 
     override fun onError(ex: Exception?) {
         Log.i("err","happen error")
+    }
+
+    fun setParameter(number:String){
+        var at=""
+        var bt=""
+        var bo=false
+        var und=false
+
+        if (number[5]=='c') paintView.partClear()
+        else if (number[6] == 'a') {
+            for (i in number)  {
+                when(i){
+                    '/'->bo=true
+                    '_'->und=true
+                    'a'->Unit
+                    else->{
+                        if (und) {
+                            if (bo) bt += i
+                            else at += i
+                        }
+                    }
+                }
+            }
+            paintView.otherMove(at.toFloat(), bt.toFloat())
+        } else {
+            for (i in number) {
+                when(i){
+                    '/'->bo=true
+                    '_'->und=true
+                    else->{
+                        if (und) {
+                            if (bo) bt += i
+                            else at += i
+                        }
+                    }
+                }
+            }
+            paintView.otherDraw(at.toFloat(), bt.toFloat())
+        }
     }
 }
