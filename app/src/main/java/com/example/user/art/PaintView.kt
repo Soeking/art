@@ -19,11 +19,15 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     private val path: Path
     private val otherpaint:Paint
     private val otherpath:Path
-    val uri=URI("ws://10.24.87.70:8080/myws/echo")
+    val uri=URI("ws://192.168.0.22:8080/myws/echo")
     val client=WebSocket(this,uri)
     val form= SimpleDateFormat("ssSSS")
     val data= Date(System.currentTimeMillis())
     val myid="${form.format(data)}"
+    var lastX=0f
+    var lastY=0f
+    var otherX=0f
+    var otherY=0f
 
     init {
         path = Path()
@@ -57,17 +61,23 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
                 path.moveTo(x, y)
                 Log.i("before","x:$x y:$y")
                 client.send("${myid}_a$x/$y")
+                lastX=x
+                lastY=y
                 invalidate()
             }
             MotionEvent.ACTION_MOVE -> {
                 path.lineTo(x, y)
                 Log.i("before","x:$x y:$y")
                 client.send("${myid}_$x/$y")
+                lastX=x
+                lastY=y
                 invalidate()
             }
             MotionEvent.ACTION_UP -> {
                 path.lineTo(x, y)
                 client.send("${myid}_$x/$y")
+                lastX=x
+                lastY=y
                 invalidate()
             }
         }
@@ -76,6 +86,8 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
 
     fun otherMove(x: Float,y: Float):Boolean{
         otherpath.moveTo(x,y)
+        otherX=x
+        otherY=y
         invalidate()
         Log.i("otherMove","success")
         return true
@@ -83,6 +95,8 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
 
     fun otherDraw(x:Float,y:Float): Boolean {
         otherpath.lineTo(x,y)
+        otherX=x
+        otherY=y
         invalidate()
         Log.i("otherDraw","success")
         return true
@@ -96,7 +110,9 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
 
     fun otherClear(){
         path.reset()
+        path.moveTo(lastX,lastY)
         otherpath.reset()
+        otherpath.moveTo(otherX,otherY)
         invalidate()
     }
 
