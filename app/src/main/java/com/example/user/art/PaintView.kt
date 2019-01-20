@@ -55,27 +55,29 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
+        val xx=x/width
+        val yy=y/height
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 path.moveTo(x, y)
-                Log.i("before","x:$x y:$y")
-                client.send("${myid}_a$x/$y")
+                Log.i("before","x:$xx y:$yy")
+                client.send("${myid}_a$xx/$yy")
                 lastX=x
                 lastY=y
                 invalidate()
             }
             MotionEvent.ACTION_MOVE -> {
                 path.lineTo(x, y)
-                Log.i("before","x:$x y:$y")
-                client.send("${myid}_$x/$y")
+                Log.i("before","x:$xx y:$yy")
+                client.send("${myid}_$xx/$yy")
                 lastX=x
                 lastY=y
                 invalidate()
             }
             MotionEvent.ACTION_UP -> {
                 path.lineTo(x, y)
-                client.send("${myid}_$x/$y")
+                client.send("${myid}_$xx/$yy")
                 lastX=x
                 lastY=y
                 invalidate()
@@ -84,7 +86,9 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
         return true
     }
 
-    fun otherMove(x: Float,y: Float):Boolean{
+    fun otherMove(xx: Float,yy: Float):Boolean{
+        val x=xx*width
+        val y=yy*height
         otherpath.moveTo(x,y)
         otherX=x
         otherY=y
@@ -93,7 +97,9 @@ class PaintView (context: Context, attrs: AttributeSet? = null) : View(context, 
         return true
     }
 
-    fun otherDraw(x:Float,y:Float): Boolean {
+    fun otherDraw(xx:Float,yy:Float): Boolean {
+        val x=xx*width
+        val y=yy*height
         otherpath.lineTo(x,y)
         otherX=x
         otherY=y

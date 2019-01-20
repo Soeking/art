@@ -43,7 +43,7 @@ class WebSocket(activity: View,uri: URI): WebSocketClient(uri){
         Log.i("err","happen error")
     }
 
-    fun setParameter(number:String){
+    private fun setParameter(number:String){
         var at=""
         var bt=""
         var bo=false
